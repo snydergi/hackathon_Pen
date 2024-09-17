@@ -61,10 +61,10 @@ class RealSense():
 
     def removeBackground(self):
         grey_color = 153
-        depth_image_3d = np.dstack((self.depthImage,self.depthImage,self.depthImage)) #depth image is 1 channel, color is 3 channels
-        bg_removed = np.where((depth_image_3d > self.clippingDistanceScaled) | (depth_image_3d <= 0), grey_color, self.colorImage)
+        self.depth_image_3d = np.dstack((self.depthImage,self.depthImage,self.depthImage)) #depth image is 1 channel, color is 3 channels
+        self.bg_removed = np.where((self.depth_image_3d > self.clippingDistanceScaled) | (self.depth_image_3d <= 0), grey_color, self.colorImage)
         depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(self.depthImage, alpha=0.03), cv2.COLORMAP_JET)
-        self.images = np.hstack((bg_removed, depth_colormap))
+        self.images = np.hstack((self.bg_removed, depth_colormap))
 
     def cleanup(self):
         self.pipeline.stop()
