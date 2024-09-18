@@ -66,5 +66,13 @@ class RealSense():
         depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(self.depthImage, alpha=0.03), cv2.COLORMAP_JET)
         self.images = np.hstack((self.bg_removed, depth_colormap))
 
+    def convertCoords(self, px, py):
+        # cfg = self.pipeline.start(self.config)
+        # profile = cfg.get_stream(rs.stream.color)
+        prof2 = self.profile.get_stream(rs.stream.color)
+        intr = prof2.as_video_stream_profile().get_intrinsics()
+        coordConv = rs.rs2_deproject_pixel_to_point(intr, [px,py], self.depthImage[py][px] * self.depthScale)
+        return coordConv
+
     def cleanup(self):
         self.pipeline.stop()

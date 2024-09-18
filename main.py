@@ -70,6 +70,8 @@ while True:
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
             cv2.circle(contourImage,(cx,cy),2,(255,0,0),5)
+            coordConverted = cam.convertCoords(cx,cy)
+            print(coordConverted)
 
     cv2.imshow('Test Window', contourImage)
 
