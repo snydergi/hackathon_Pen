@@ -43,12 +43,14 @@ while True:
     #################### END_CITATION [2] #############################
 
     #################### BEGIN_CITATION [3] ###########################
-    colorChange[:, :, 0] = (colorChange[:, :, 0] - hmax)
-    colorChange[:, :, 1] = (colorChange[:, :, 1] - smax)
-    colorChange[:, :, 2] = (colorChange[:, :, 2] - vmax)
+    # colorChange[:, :, 0] = (colorChange[:, :, 0] - hmax)
+    # colorChange[:, :, 1] = (colorChange[:, :, 1] - smax)
+    # colorChange[:, :, 2] = (colorChange[:, :, 2] - vmax)
     #################### END_CITATION [3] #############################
 
-    cv2.imshow('Test Window', colorChange)
+    maskedImage = cv2.inRange(colorChange,(hmin,smin,vmin),(hmax,smax,vmax))
+
+    cv2.imshow('Test Window', maskedImage)
 
     key = cv2.waitKey(1)
     # Press esc or 'q' to close the image window
