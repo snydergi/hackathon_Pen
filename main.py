@@ -60,6 +60,17 @@ while True:
     contour, hierarchy = cv2.findContours(maskedImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     contourImage = cv2.drawContours(cam.colorImage,contour,-1,(0,0,255),3)
 
+    if len(contour) >= 1:
+        cnt = contour[0]
+        for i in range(len(contour)):
+            if cv2.contourArea(cnt) < cv2.contourArea(contour[i]):
+                cnt = contour[i]
+        M = cv2.moments(cnt)
+        if(M['m00'] != 0):
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+            cv2.circle(contourImage,(cx,cy),2,(255,0,0),5)
+
     cv2.imshow('Test Window', contourImage)
 
     key = cv2.waitKey(1)
