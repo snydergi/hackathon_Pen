@@ -22,6 +22,12 @@ cv2.createTrackbar('Sat Max', 'Test Window', 0, sat_slider_max, nothing)
 cv2.createTrackbar('Sat Min', 'Test Window', 0, sat_slider_min, nothing)
 cv2.createTrackbar('Val Max', 'Test Window', 0, val_slider_max, nothing)
 cv2.createTrackbar('Val Min', 'Test Window', 0, val_slider_min, nothing)
+cv2.setTrackbarPos('Hue Max', 'Test Window', 143)
+cv2.setTrackbarPos('Sat Max', 'Test Window', 163)
+cv2.setTrackbarPos('Val Max', 'Test Window', 255)
+cv2.setTrackbarPos('Hue Min', 'Test Window', 112)
+cv2.setTrackbarPos('Sat Min', 'Test Window', 87)
+cv2.setTrackbarPos('Val Min', 'Test Window', 81)
 
 while True:
     cam.captureFrame()
@@ -48,9 +54,13 @@ while True:
     # colorChange[:, :, 2] = (colorChange[:, :, 2] - vmax)
     #################### END_CITATION [3] #############################
 
+    # For Adjusting HSV Min/Max Values to Test
     maskedImage = cv2.inRange(colorChange,(hmin,smin,vmin),(hmax,smax,vmax))
 
-    cv2.imshow('Test Window', maskedImage)
+    contour, hierarchy = cv2.findContours(maskedImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contourImage = cv2.drawContours(cam.colorImage,contour,-1,(0,0,255),3)
+
+    cv2.imshow('Test Window', contourImage)
 
     key = cv2.waitKey(1)
     # Press esc or 'q' to close the image window
