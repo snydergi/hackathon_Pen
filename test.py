@@ -1,3 +1,4 @@
+################## BEGIN_CITATION [2] #######################
 # import required libraries
 import cv2
 import numpy as np
@@ -28,3 +29,4 @@ while(True):
    img[:] = [h,s,v]
    img = cv2.cvtColor(img, cv2.COLOR_HSV2BGR)
 cv2.destroyAllWindows()
+###################### END_CITATION [2] ######################
