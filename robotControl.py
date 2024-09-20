@@ -14,13 +14,24 @@ class MrGrip():
         self.wristMax = 123 * math.pi / 180
         self.wristMin = -100 * math.pi / 180
 
-        self.calibrationPt1 = [0.000, 0.030680, 0.069029, 0.033748]
-        self.calibrationPt2 = [0.500, 0.030680, 0.069029, 0.033748]
-        self.calibrationPt3 = [-0.500, 0.030680, 0.069029, 0.033748]
-        self.calibrationPt4 = [-0.009204, 0.027612, -0.671767, 0.006136]
-        self.calibrationPt5 = [-0.509204, 0.027612, 0.078233, 0.006136]
+        # self.calibrationPt1 = [0.000, 0.030680, 0.069029, 0.033748]
+        # self.calibrationPt2 = [0.500, 0.030680, 0.069029, 0.033748]
+        # self.calibrationPt3 = [-0.500, 0.030680, 0.069029, 0.033748]
+        # self.calibrationPt4 = [-0.009204, 0.027612, -0.671767, 0.006136]
+        # self.calibrationPt5 = [-0.509204, 0.027612, 0.078233, 0.006136]
 
-        self.calibrationPoints = [self.calibrationPt1, self.calibrationPt2, self.calibrationPt3, self.calibrationPt4, self.calibrationPt5]
+        self.cp1 = [0.00,0.052155,0.075165,0.038350]
+        self.cp2 = [0.25,0.052155,0.075165,0.038350]
+        self.cp3 = [0.50,0.052155,0.075165,0.038350]
+        self.cp4 = [-0.25,0.052155,0.075165,0.038350]
+        self.cp5 = [-0.50,0.052155,0.075165,0.038350]
+        self.cp6 = [0.00,0.052155,-0.424835,0.038350]
+        self.cp7 = [0.25,0.052155,-0.424835,0.038350]
+        self.cp8 = [0.50,0.052155,-0.424835,0.038350]
+        self.cp9 = [-0.25,0.052155,-0.424835,0.038350]
+        self.cp10 = [-0.50,0.052155,-0.424835,0.038350]
+
+        self.calibrationPoints = [self.cp1, self.cp2, self.cp3, self.cp4, self.cp5, self.cp6, self.cp7, self.cp8, self.cp9, self.cp10]
 
         # The robot object is what you use to control the robot
         self.robot = InterbotixManipulatorXS("px100", "arm", "gripper")
@@ -43,38 +54,38 @@ class MrGrip():
             self.mode=input("[h]ome, [s]leep, [o]pen grip, [c]lose grip, [r]otate waist, [e]lbow move, [w]rist move, [p]rint current positions, [q]uit ")
             if self.mode == "h":
                 self.robot.arm.go_to_home_pose()
-                waistPos, shoulderPos, elbowPos, wristPos = self.updateJointPositions()
+                self.waistPos, self.shoulderPos, self.elbowPos, self.wristPos = self.updateJointPositions()
             elif self.mode == "s":
                 self.robot.arm.go_to_sleep_pose()
-                waistPos, shoulderPos, elbowPos, wristPos = self.updateJointPositions()
+                self.waistPos, self.shoulderPos, self.elbowPos, self.wristPos = self.updateJointPositions()
             elif self.mode == "c":
                 self.robot.gripper.grasp()
             elif self.mode == "o":
                 self.robot.gripper.release()
             elif self.mode == "r":
-                printMsg = 'Current Position is: %f' % wristPos
+                printMsg = 'Current Position is: %f' % self.wristPos
                 print(printMsg)
                 waistChange = float(input("Input change in radians (-Pi to Pi): "))
-                if waistPos + waistChange < self.waistMax and waistPos + waistChange > self.waistMin:
-                    self.robot.arm.set_single_joint_position('waist', waistPos+waistChange)
-                    waistPos += waistChange
+                if self.waistPos + waistChange < self.waistMax and self.waistPos + waistChange > self.waistMin:
+                    self.robot.arm.set_single_joint_position('waist', self.waistPos+waistChange)
+                    self.waistPos += waistChange
             elif self.mode == "e":
-                printMsg = 'Current Position is: %f' % elbowPos
+                printMsg = 'Current Position is: %f' % self.elbowPos
                 print(printMsg)
                 elbowChange = float(input("Input change in radians (APPROX. -2.11 to 1.60): "))
-                if elbowPos + elbowChange < self.elbowMax and elbowPos + elbowChange > self.elbowMin:
-                    self.robot.arm.set_single_joint_position('elbow', elbowPos+elbowChange)
-                    elbowPos += elbowChange
+                if self.elbowPos + elbowChange < self.elbowMax and self.elbowPos + elbowChange > self.elbowMin:
+                    self.robot.arm.set_single_joint_position('elbow', self.elbowPos+elbowChange)
+                    self.elbowPos += elbowChange
             elif self.mode == "w":
                 print("Sorry not setup yet!")
             elif self.mode == "p":
-                printMsg = 'Current Waist Position is: %f' % waistPos
+                printMsg = 'Current Waist Position is: %f' % self.waistPos
                 print(printMsg)
-                printMsg = 'Current Shoulder Position is: %f' % shoulderPos
+                printMsg = 'Current Shoulder Position is: %f' % self.shoulderPos
                 print(printMsg)
-                printMsg = 'Current Elbow Position is: %f' % elbowPos
+                printMsg = 'Current Elbow Position is: %f' % self.elbowPos
                 print(printMsg)
-                printMsg = 'Current Wrist Position is: %f' % wristPos
+                printMsg = 'Current Wrist Position is: %f' % self.wristPos
                 print(printMsg)
 
     def robotShutdown(self):

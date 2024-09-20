@@ -12,6 +12,10 @@ Rmat = []
 t = []
 
 def runCalibration():
+    mrGrip.robot.gripper.release()
+    time.sleep(3)
+    mrGrip.robot.gripper.grasp()
+    time.sleep(2)
     for pt in mrGrip.calibrationPoints:
         mrGrip.goToJointPositions(pt)
         eePose = mrGrip.robot.arm.get_ee_pose()
@@ -30,4 +34,4 @@ def runCalibration():
     return Rmat, t
 
 
-# runCalibration()
+runCalibration()
