@@ -22,12 +22,15 @@ cv2.createTrackbar('Sat Max', 'Test Window', 0, sat_slider_max, nothing)
 cv2.createTrackbar('Sat Min', 'Test Window', 0, sat_slider_min, nothing)
 cv2.createTrackbar('Val Max', 'Test Window', 0, val_slider_max, nothing)
 cv2.createTrackbar('Val Min', 'Test Window', 0, val_slider_min, nothing)
+#################### END_CITATION [2] #############################
+
 cv2.setTrackbarPos('Hue Max', 'Test Window', 143)
 cv2.setTrackbarPos('Sat Max', 'Test Window', 163)
 cv2.setTrackbarPos('Val Max', 'Test Window', 255)
 cv2.setTrackbarPos('Hue Min', 'Test Window', 112)
 cv2.setTrackbarPos('Sat Min', 'Test Window', 87)
 cv2.setTrackbarPos('Val Min', 'Test Window', 81)
+
 
 while True:
     cam.captureFrame()
