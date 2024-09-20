@@ -36,7 +36,7 @@ class MrGrip():
         # The robot object is what you use to control the robot
         self.robot = InterbotixManipulatorXS("px100", "arm", "gripper")
 
-        # robot_startup()
+        robot_startup()
         self.mode = "h"
 
         self.waistPos, self.shoulderPos, self.elbowPos, self.wristPos = self.updateJointPositions()

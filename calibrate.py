@@ -12,26 +12,14 @@ Rmat = []
 t = []
 
 def runCalibration():
+    time.sleep(1)
     mrGrip.robot.gripper.release()
-    time.sleep(3)
+    time.sleep(1)
     mrGrip.robot.gripper.grasp()
     time.sleep(2)
     for pt in mrGrip.calibrationPoints:
-        mrGrip.goToJointPositions(pt)
-        eePose = mrGrip.robot.arm.get_ee_pose()
-        eeXYZ = [eePose[0][-1],eePose[1][-1],eePose[2][-1]]
-        robotPointList.append(eeXYZ)
-        cam.getOneConvertedFrame()
-        cameraPointList.append(cam.convertCoords(cam.cx,cam.cy))
+        mrGrip.robot.arm.set_joint_positions(pt)
         time.sleep(2)
-    cam.cleanup()
-    print(cameraPointList)
-    print(mrGrip.calibrationPoints)
-    Rmat, rssd = scipy.spatial.transform.Rotation.align_vectors(robotPointList, cameraPointList)
-    print(Rmat.as_matrix())
-    t = robotPointList[0] - Rmat.apply(cameraPointList[0])
-    print(t)
-    return Rmat, t
-
+    mrGrip.robotShutdown()
 
 runCalibration()
