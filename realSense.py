@@ -13,6 +13,7 @@ class RealSense():
         device_product_line = str(device.get_info(rs.camera_info.product_line))
         self.cx = 0
         self.cy = 0
+        self.coordConverted = []
         found_rgb = False
         for s in device.sensors:
             if s.get_info(rs.camera_info.name) == 'RGB Camera':
@@ -85,8 +86,8 @@ class RealSense():
             self.cx = int(M['m10']/M['m00'])
             self.cy = int(M['m01']/M['m00'])
             cv2.circle(contourImage,(self.cx,self.cy),2,(255,0,0),5)
-            coordConverted = self.convertCoords(self.cx,self.cy)
-            print(coordConverted)
+            self.coordConverted = self.convertCoords(self.cx,self.cy)
+            print(self.coordConverted)
 
     def getOneConvertedFrame(self):
         self.captureFrame()

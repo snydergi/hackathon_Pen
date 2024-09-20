@@ -4,14 +4,14 @@ import robotControl as rc
 import time
 import scipy
 
-mrGrip = rc.MrGrip()
-cam = rs.RealSense(0)
+# mrGrip = rc.MrGrip()
+# cam = rs.RealSense(0)
 cameraPointList = []
 robotPointList = []
 Rmat = []
 t = []
 
-def runCalibration():
+def runCalibration(mrGrip, cam):
     for pt in mrGrip.calibrationPoints:
         mrGrip.goToJointPositions(pt)
         eePose = mrGrip.robot.arm.get_ee_pose()
@@ -20,7 +20,7 @@ def runCalibration():
         cam.getOneConvertedFrame()
         cameraPointList.append(cam.convertCoords(cam.cx,cam.cy))
         time.sleep(2)
-    cam.cleanup()
+    # cam.cleanup()
     print(cameraPointList)
     print(mrGrip.calibrationPoints)
     Rmat, rssd = scipy.spatial.transform.Rotation.align_vectors(robotPointList, cameraPointList)
