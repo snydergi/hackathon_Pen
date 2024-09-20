@@ -1,8 +1,10 @@
 import realSense
 import cv2
+import robotControl as rc
 
 num = int(input("Enter 0 to just stream, 1 to record, or 2 to playback recording: "))
 cam = realSense.RealSense(num)
+mrGrip = rc.MrGrip()
 
 hue_slider_max = 179
 sat_slider_max = 255
@@ -64,17 +66,7 @@ while True:
     contourImage = cv2.drawContours(cam.colorImage,contour,-1,(0,0,255),3)
 
     if len(contour) >= 1:
-        cnt = contour[0]
-        for i in range(len(contour)):
-            if cv2.contourArea(cnt) < cv2.contourArea(contour[i]):
-                cnt = contour[i]
-        M = cv2.moments(cnt)
-        if(M['m00'] != 0):
-            cx = int(M['m10']/M['m00'])
-            cy = int(M['m01']/M['m00'])
-            cv2.circle(contourImage,(cx,cy),2,(255,0,0),5)
-            coordConverted = cam.convertCoords(cx,cy)
-            print(coordConverted)
+        cam.convertAndDrawCentroid(contour,contourImage)
 
     cv2.imshow('Test Window', contourImage)
 

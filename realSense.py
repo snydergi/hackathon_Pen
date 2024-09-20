@@ -11,7 +11,8 @@ class RealSense():
         pipeline_profile = self.config.resolve(pipeline_wrapper)
         device = pipeline_profile.get_device()
         device_product_line = str(device.get_info(rs.camera_info.product_line))
-
+        self.cx = 0
+        self.cy = 0
         found_rgb = False
         for s in device.sensors:
             if s.get_info(rs.camera_info.name) == 'RGB Camera':
@@ -73,6 +74,35 @@ class RealSense():
         intr = prof2.as_video_stream_profile().get_intrinsics()
         coordConv = rs.rs2_deproject_pixel_to_point(intr, [px,py], self.depthImage[py][px] * self.depthScale)
         return coordConv
+
+    def convertAndDrawCentroid(self, contour, contourImage):
+        cnt = contour[0]
+        for i in range(len(contour)):
+            if cv2.contourArea(cnt) < cv2.contourArea(contour[i]):
+                cnt = contour[i]
+        M = cv2.moments(cnt)
+        if(M['m00'] != 0):
+            self.cx = int(M['m10']/M['m00'])
+            self.cy = int(M['m01']/M['m00'])
+            cv2.circle(contourImage,(self.cx,self.cy),2,(255,0,0),5)
+            coordConverted = self.convertCoords(self.cx,self.cy)
+            print(coordConverted)
+
+    def getOneConvertedFrame(self):
+        self.captureFrame()
+        self.getDepthAndColorImage()
+        self.removeBackground()
+        colorChange = cv2.cvtColor(self.bg_removed, cv2.COLOR_BGR2HSV)
+        maskedImage = cv2.inRange(colorChange,(113,40,0),(142,174,273))
+        contour, hierarchy = cv2.findContours(maskedImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contourImage = cv2.drawContours(self.colorImage,contour,-1,(0,0,255),3)
+        if len(contour) >= 1:
+            self.convertAndDrawCentroid(contour,contourImage)
+        cv2.imshow('Test Window', contourImage)
+        key = cv2.waitKey(2000)
+        # Press esc or 'q' to close the image window
+        if key & 0xFF == ord('q') or key == 27:
+            cv2.destroyAllWindows()
 
     def cleanup(self):
         self.pipeline.stop()
