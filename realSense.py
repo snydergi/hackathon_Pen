@@ -85,8 +85,8 @@ class RealSense():
             self.cx = int(M['m10']/M['m00'])
             self.cy = int(M['m01']/M['m00'])
             cv2.circle(contourImage,(self.cx,self.cy),2,(255,0,0),5)
-            coordConverted = self.convertCoords(self.cx,self.cy)
-            print(coordConverted)
+            self.coordConverted = self.convertCoords(self.cx,self.cy)
+            print(self.coordConverted)
 
     def getOneConvertedFrame(self):
         self.captureFrame()

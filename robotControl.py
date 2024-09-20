@@ -94,6 +94,13 @@ class MrGrip():
     def goToJointPositions(self, posList):
         self.robot.arm.set_joint_positions(posList)
 
+    def getPoseXYZ(self):
+        eePose = self.robot.arm.get_ee_pose()
+        eex = eePose[0][3]
+        eey = eePose[1][3]
+        eez = eePose[2][3]
+        return [eex,eey,eez]
+
 # roobit = MrGrip()
 # roobit.manualControl()
 # roobit.goToJointPositions(roobit.calibrationPt1)
