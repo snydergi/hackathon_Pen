@@ -93,7 +93,7 @@ class RealSense():
         self.getDepthAndColorImage()
         self.removeBackground()
         colorChange = cv2.cvtColor(self.bg_removed, cv2.COLOR_BGR2HSV)
-        maskedImage = cv2.inRange(colorChange,(113,40,0),(142,174,273))
+        maskedImage = cv2.inRange(colorChange,(112,87,81),(143,163,255))
         contour, hierarchy = cv2.findContours(maskedImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         contourImage = cv2.drawContours(self.colorImage,contour,-1,(0,0,255),3)
         if len(contour) >= 1:
