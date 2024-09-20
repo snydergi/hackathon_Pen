@@ -11,6 +11,12 @@ elbowMin = -121 * math.pi / 180
 wristMax = 123 * math.pi / 180
 wristMin = -100 * math.pi / 180
 
+calibrationPt1 = [0.000, 0.030680, 0.069029, 0.033748]
+calibrationPt2 = [0.500, 0.030680, 0.069029, 0.033748]
+calibrationPt3 = [-0.500, 0.030680, 0.069029, 0.033748]
+calibrationPt4 = [-0.009204, 0.027612, -0.671767, 0.006136]
+calibrationPt5 = [-0.509204, 0.027612, 0.078233, 0.006136]
+
 def updateJointPositions():
     waistPos = robot.core.robot_get_single_joint_state('waist')['position']
     shoulderPos = robot.core.robot_get_single_joint_state('shoulder')['position']
@@ -28,7 +34,7 @@ waistPos, shoulderPos, elbowPos, wristPos = updateJointPositions()
 
 # Let the user select the position
 while mode != 'q':
-    mode=input("[h]ome, [s]leep, [o]pen grip, [c]lose grip, [r]otate waist, [e]lbow move, [w]rist move, [q]uit ")
+    mode=input("[h]ome, [s]leep, [o]pen grip, [c]lose grip, [r]otate waist, [e]lbow move, [w]rist move, [p]rint current positions, [q]uit ")
     if mode == "h":
         robot.arm.go_to_home_pose()
         waistPos, shoulderPos, elbowPos, wristPos = updateJointPositions()
@@ -55,5 +61,15 @@ while mode != 'q':
             elbowPos += elbowChange
     elif mode == "w":
         print("Sorry not setup yet!")
+    elif mode == "p":
+        printMsg = 'Current Waist Position is: %f' % waistPos
+        print(printMsg)
+        printMsg = 'Current Shoulder Position is: %f' % shoulderPos
+        print(printMsg)
+        printMsg = 'Current Elbow Position is: %f' % elbowPos
+        print(printMsg)
+        printMsg = 'Current Wrist Position is: %f' % wristPos
+        print(printMsg)
+
 
 robot_shutdown()
