@@ -18,13 +18,18 @@ mrGrip = rc.MrGrip()
 camera = rs.RealSense(0)
 
 while True:
+    mrGrip.robot.gripper.release()
     #Capture Frame
     camera.getOneConvertedFrame()
 
     #If frame has a valid centroid
     if (camera.cx != 0 and camera.cy != 0):
         convertedPt = R.apply(camera.coordConverted) + t_Vector
-        mrGrip.robot.arm.set_ee_pose_components(convertedPt)
+        mrGrip.robot.arm.set_ee_pose_components(convertedPt[0],convertedPt[1],convertedPt[2])
+        mrGrip.robot.arm.set_single_joint_position('wrist_angle', mrGrip.wristPos - 0.5)
+        time.sleep(1)
+        mrGrip.robot.gripper.grasp()
+        time.sleep(4)
 
     cv2.imshow('Test Window', camera.contourImage)
     key = cv2.waitKey(2000)

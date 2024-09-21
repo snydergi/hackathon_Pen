@@ -103,5 +103,4 @@ class MrGrip():
 
 # roobit = MrGrip()
 # roobit.manualControl()
-# roobit.goToJointPositions(roobit.calibrationPt1)
 # roobit.robotShutdown()
