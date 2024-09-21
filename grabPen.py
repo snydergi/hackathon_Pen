@@ -1,43 +1,42 @@
-import robotControl as rc
+import scipy.sparse
+import scipy.spatial
 import realSense as rs
-import calibrate
+import robotControl as rc
 import cv2
+import scipy
 import time
 
-mrGrip = rc.MrGrip()
-cam = rs.RealSense(0)
+#Initialize transformation parameters from calibration
+R_Matrix = [[ 0.99765557, -0.064186,    0.02373881],
+            [-0.02169981,  0.03227973,  0.99924328],
+            [-0.06490371, -0.99741575,  0.03081123]]
+t_Vector = [ 0.20839625, -0.37753637,  0.13887384]
+R = scipy.spatial.transform.Rotation.from_matrix(R_Matrix)
 
-# mrGrip.robot.gripper.release()
-# time.sleep(2)
-mrGrip.robot.gripper.grasp()
-time.sleep(2)
-R, t = calibrate.runCalibration(mrGrip, cam)
-mrGrip.robot.gripper.release()
+#Initialize camera and robot
+mrGrip = rc.MrGrip()
+camera = rs.RealSense(0)
 
 while True:
-    cam.captureFrame()
-    cam.getDepthAndColorImage()
-    cam.removeBackground()
-    colorChange = cv2.cvtColor(cam.bg_removed, cv2.COLOR_BGR2HSV)
-    maskedImage = cv2.inRange(colorChange,(112,87,81),(143,163,255))
-    contour, hierarchy = cv2.findContours(maskedImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contourImage = cv2.drawContours(cam.colorImage,contour,-1,(0,0,255),3)
-    if len(contour) >= 1:
-        cam.convertAndDrawCentroid(contour,contourImage)
-        eePt = R.apply(cam.coordConverted) + t
-        # print("Pen Centroid: ")
-        # print(cam.coordConverted)
-        # print("EE Pt: ")
-        # print(eePt)
-        mrGrip.robot.arm.set_ee_pose_components(eePt[0],eePt[1],eePt[2])
-        # time.sleep(2)
-        # mrGrip.robot.gripper.grasp()
-    cv2.imshow('Test Window', contourImage)
+    mrGrip.robot.gripper.release()
+    #Capture Frame
+    camera.getOneConvertedFrame()
+
+    #If frame has a valid centroid
+    if (camera.cx != 0 and camera.cy != 0):
+        convertedPt = R.apply(camera.coordConverted) + t_Vector
+        mrGrip.robot.arm.set_ee_pose_components(convertedPt[0],convertedPt[1],convertedPt[2])
+        mrGrip.robot.arm.set_single_joint_position('wrist_angle', mrGrip.wristPos - 0.5)
+        time.sleep(1)
+        mrGrip.robot.gripper.grasp()
+        time.sleep(4)
+
+    cv2.imshow('Test Window', camera.contourImage)
     key = cv2.waitKey(2000)
     # Press esc or 'q' to close the image window
     if key & 0xFF == ord('q') or key == 27:
         cv2.destroyAllWindows()
         break
 
-cam.cleanup()
+camera.cleanup()
 mrGrip.robotShutdown()

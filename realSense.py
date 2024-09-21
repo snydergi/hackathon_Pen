@@ -87,7 +87,7 @@ class RealSense():
             self.cy = int(M['m01']/M['m00'])
             cv2.circle(contourImage,(self.cx,self.cy),2,(255,0,0),5)
             self.coordConverted = self.convertCoords(self.cx,self.cy)
-            # print(self.coordConverted)
+            print(self.coordConverted)
 
     def getOneConvertedFrame(self):
         self.captureFrame()
@@ -96,14 +96,14 @@ class RealSense():
         colorChange = cv2.cvtColor(self.bg_removed, cv2.COLOR_BGR2HSV)
         maskedImage = cv2.inRange(colorChange,(112,87,81),(143,163,255))
         contour, hierarchy = cv2.findContours(maskedImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        contourImage = cv2.drawContours(self.colorImage,contour,-1,(0,0,255),3)
+        self.contourImage = cv2.drawContours(self.colorImage,contour,-1,(0,0,255),3)
         if len(contour) >= 1:
-            self.convertAndDrawCentroid(contour,contourImage)
-        cv2.imshow('Test Window', contourImage)
-        key = cv2.waitKey(2000)
-        # Press esc or 'q' to close the image window
-        if key & 0xFF == ord('q') or key == 27:
-            cv2.destroyAllWindows()
+            self.convertAndDrawCentroid(contour,self.contourImage)
+        # cv2.imshow('Test Window', contourImage)
+        # key = cv2.waitKey(2000)
+        # # Press esc or 'q' to close the image window
+        # if key & 0xFF == ord('q') or key == 27:
+        #     cv2.destroyAllWindows()
 
     def cleanup(self):
         self.pipeline.stop()
