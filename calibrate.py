@@ -53,6 +53,11 @@ def runCalibration():
     print("Transformed Camera Points: ")
     print(transformedCameraPoints)
 
+    print("R_Mat: ")
+    print(R_Mat.as_matrix())
+    print("tVec: ")
+    print(tVec)
+
     mrGrip.robotShutdown()
     cam.cleanup()
 
